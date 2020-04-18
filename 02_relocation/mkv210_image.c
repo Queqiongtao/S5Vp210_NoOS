@@ -1,10 +1,10 @@
 /*
- * mkv210_image.cçš„ä¸»è¦ä½œç”¨å°±æ˜¯ç”±usbå¯åŠ¨æ—¶ä½¿ç”¨çš„led.binåˆ¶ä½œå¾—åˆ°ç”±sdå¡å¯åŠ¨çš„é•œåƒ210.bin
+ * mkv210_image.cµÄÖ÷Òª×÷ÓÃ¾ÍÊÇÓÉusbÆô¶¯Ê±Ê¹ÓÃµÄled.binÖÆ×÷µÃµ½ÓÉsd¿¨Æô¶¯µÄ¾µÏñ210.bin
  *
- * æœ¬æ–‡ä»¶æ¥è‡ªäºå‹å–„ä¹‹è‡‚çš„è£¸æœºæ•™ç¨‹ï¼Œæ®å‹å–„ä¹‹è‡‚çš„æ–‡æ¡£ä¸­è®²è¿°ï¼Œæœ¬æ–‡ä»¶æ˜¯ä¸€ä¸ªçƒ­å¿ƒç½‘å‹æä¾›ï¼Œåœ¨æ­¤è¡¨ç¤ºæ„Ÿè°¢ã€‚
+ * ±¾ÎÄ¼şÀ´×ÔÓÚÓÑÉÆÖ®±ÛµÄÂã»ú½Ì³Ì£¬¾İÓÑÉÆÖ®±ÛµÄÎÄµµÖĞ½²Êö£¬±¾ÎÄ¼şÊÇÒ»¸öÈÈĞÄÍøÓÑÌá¹©£¬ÔÚ´Ë±íÊ¾¸ĞĞ»¡£
  */
-/* åœ¨BL0é˜¶æ®µï¼ŒIromå†…å›ºåŒ–çš„ä»£ç è¯»å–nandflashæˆ–SDå¡å‰16Kçš„å†…å®¹ï¼Œ
- * å¹¶æ¯”å¯¹å‰16å­—èŠ‚ä¸­çš„æ ¡éªŒå’Œæ˜¯å¦æ­£ç¡®ï¼Œæ­£ç¡®åˆ™ç»§ç»­ï¼Œé”™è¯¯åˆ™åœæ­¢ã€‚
+/* ÔÚBL0½×¶Î£¬IromÄÚ¹Ì»¯µÄ´úÂë¶ÁÈ¡nandflash»òSD¿¨Ç°16KµÄÄÚÈİ£¬
+ * ²¢±È¶ÔÇ°16×Ö½ÚÖĞµÄĞ£ÑéºÍÊÇ·ñÕıÈ·£¬ÕıÈ·Ôò¼ÌĞø£¬´íÎóÔòÍ£Ö¹¡£
  */
 #include <stdio.h>
 #include <string.h>
@@ -25,14 +25,14 @@ int main (int argc, char *argv[])
 	unsigned int	checksum, count;
 	int		i;
 	
-	// 1. 3ä¸ªå‚æ•°
+	// 1. 3¸ö²ÎÊı
 	if (argc != 3)
 	{
 		printf("Usage: %s <source file> <destination file>\n", argv[0]);
 		return -1;
 	}
 
-	// 2. åˆ†é…16Kçš„buffer
+	// 2. ·ÖÅä16KµÄbuffer
 	BufLen = BUFSIZE;
 	Buf = (char *)malloc(BufLen);
 	if (!Buf)
@@ -43,8 +43,8 @@ int main (int argc, char *argv[])
 
 	memset(Buf, 0x00, BufLen);
 
-	// 3. è¯»æºbinåˆ°buffer
-	// 3.1 æ‰“å¼€æºbin
+	// 3. ¶ÁÔ´binµ½buffer
+	// 3.1 ´ò¿ªÔ´bin
 	fp = fopen(argv[1], "rb");
 	if( fp == NULL)
 	{
@@ -52,16 +52,16 @@ int main (int argc, char *argv[])
 		free(Buf);
 		return -1;
 	}
-	// 3.2 è·å–æºbiné•¿åº¦
-	fseek(fp, 0L, SEEK_END);								// å®šä½åˆ°æ–‡ä»¶å°¾
-	fileLen = ftell(fp);									// å¾—åˆ°æ–‡ä»¶é•¿åº¦
-	fseek(fp, 0L, SEEK_SET);								// å†æ¬¡å®šä½åˆ°æ–‡ä»¶å¤´
-	// 3.3 æºbiné•¿åº¦ä¸å¾—è¶…è¿‡16K-16byte
+	// 3.2 »ñÈ¡Ô´bin³¤¶È
+	fseek(fp, 0L, SEEK_END);								// ¶¨Î»µ½ÎÄ¼şÎ²
+	fileLen = ftell(fp);									// µÃµ½ÎÄ¼ş³¤¶È
+	fseek(fp, 0L, SEEK_SET);								// ÔÙ´Î¶¨Î»µ½ÎÄ¼şÍ·
+	// 3.3 Ô´bin³¤¶È²»µÃ³¬¹ı16K-16byte
 	count = (fileLen < (IMG_SIZE - SPL_HEADER_SIZE))
 		? fileLen : (IMG_SIZE - SPL_HEADER_SIZE);
-	// 3.4 buffer[0~15]å­˜æ”¾"S5PC110 HEADER  "
+	// 3.4 buffer[0~15]´æ·Å"S5PC110 HEADER  "
 	memcpy(&Buf[0], SPL_HEADER, SPL_HEADER_SIZE);
-	// 3.5 è¯»æºbinåˆ°buffer[16]
+	// 3.5 ¶ÁÔ´binµ½buffer[16]
 	nbytes = fread(Buf + SPL_HEADER_SIZE, 1, count, fp);
 	if ( nbytes != count )
 	{
@@ -72,18 +72,18 @@ int main (int argc, char *argv[])
 	}
 	fclose(fp);
 
-	// 4. è®¡ç®—æ ¡éªŒå’Œ
- 	// 4.1 ä»ç¬¬16byteå¼€å§‹ç»Ÿè®¡bufferä¸­å…±æœ‰å‡ ä¸ª1
-	// 4.1 ä»ç¬¬16byteå¼€å§‹è®¡ç®—ï¼ŒæŠŠbufferä¸­æ‰€æœ‰çš„å­—èŠ‚æ•°æ®åŠ å’Œèµ·æ¥å¾—åˆ°çš„ç»“æœ
+	// 4. ¼ÆËãĞ£ÑéºÍ
+ 	// 4.1 ´ÓµÚ16byte¿ªÊ¼Í³¼ÆbufferÖĞ¹²ÓĞ¼¸¸ö1
+	// 4.1 ´ÓµÚ16byte¿ªÊ¼¼ÆËã£¬°ÑbufferÖĞËùÓĞµÄ×Ö½ÚÊı¾İ¼ÓºÍÆğÀ´µÃµ½µÄ½á¹û
 	a = Buf + SPL_HEADER_SIZE;
 	for(i = 0, checksum = 0; i < IMG_SIZE - SPL_HEADER_SIZE; i++)
 		checksum += (0x000000FF) & *a++;
-	// 4.2 å°†æ ¡éªŒå’Œä¿å­˜åœ¨buffer[8~15]
-	a = Buf + 8;							// Bufæ˜¯210.binçš„èµ·å§‹åœ°å€ï¼Œ+8è¡¨ç¤ºå‘åä½ç§»2ä¸ªå­—ï¼Œä¹Ÿå°±æ˜¯è¯´å†™å…¥åˆ°ç¬¬3ä¸ªå­—
+	// 4.2 ½«Ğ£ÑéºÍ±£´æÔÚbuffer[8~15]
+	a = Buf + 8;							// BufÊÇ210.binµÄÆğÊ¼µØÖ·£¬+8±íÊ¾ÏòºóÎ»ÒÆ2¸ö×Ö£¬Ò²¾ÍÊÇËµĞ´Èëµ½µÚ3¸ö×Ö
 	*( (unsigned int *)a ) = checksum;
 
-	// 5. æ‹·è´bufferä¸­çš„å†…å®¹åˆ°ç›®çš„bin
-	// 5.1 æ‰“å¼€ç›®çš„bin
+	// 5. ¿½±´bufferÖĞµÄÄÚÈİµ½Ä¿µÄbin
+	// 5.1 ´ò¿ªÄ¿µÄbin
 	fp = fopen(argv[2], "wb");
 	if (fp == NULL)
 	{
@@ -91,7 +91,7 @@ int main (int argc, char *argv[])
 		free(Buf);
 		return -1;
 	}
-	// 5.2 å°†16kçš„bufferæ‹·è´åˆ°ç›®çš„binä¸­
+	// 5.2 ½«16kµÄbuffer¿½±´µ½Ä¿µÄbinÖĞ
 	a = Buf;
 	nbytes	= fwrite( a, 1, BufLen, fp);
 	if ( nbytes != BufLen )
@@ -107,4 +107,3 @@ int main (int argc, char *argv[])
 
 	return 0;
 }
-

@@ -1,9 +1,10 @@
 SECTIONS
 {
-	. = 0xd0024000;
+	. = 0x20000000;
 	
 	.text : {
 		start.o
+		sdram_init.o
 		* (.text)
 	}
     		
@@ -18,4 +19,3 @@ SECTIONS
 	
 	bss_end  = .;	
 }
-
